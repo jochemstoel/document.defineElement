@@ -82,6 +82,6 @@ I am not very imaginative. Sorry.
 
 ## Bad ideas
 
-* completely overwrite the ```markup <body> ``` element and break things
+* completely overwrite the ``` <body> ``` element and break things
 * make iframes or script tags stop working
 
