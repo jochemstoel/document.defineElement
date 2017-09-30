@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="defineElement.js"></script>
+	<script>
+		class HTMLSimpleClockElement extends HTMLSpanElement {
+
+			createdCallback() {
+		   		var self = this
+		        this.interval = setInterval(function() {
+		        	self.innerText = new Date(new Date().getTime()).toLocaleTimeString()
+		        }, 1000)
+			}
+		    
+		}
+		var Timer = document.defineElement('timer', HTMLSimpleClockElement)
+	</script>
+</head>
+<body>
+<timer></timer>
+<script>
+	var timer = new Timer()
+	document.body.appendChild(timer)
+</script>
+</body>
+</html>
