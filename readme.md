@@ -49,7 +49,7 @@ document.createElement('custom-element')
 ``` 
 
 ## Simple clock, an actual example
-The following custom element will show the current time and update it every second like a clock. In this example we are not using a hyphen in the node name. All we need to show a clock in our custom interface framework thing is put ```markup <clock></clock> ``` somewhere.
+The following custom element will show the current time and update it every second like a clock. In this example we are not using a hyphen in the node name. All we need to show a clock in our custom interface framework thing is put ``` <clock></clock> ``` somewhere.
 
 ```js
 class HTMLSimpleClockElement extends HTMLSpanElement {
@@ -76,9 +76,9 @@ document.registerElement('clock', HTMLSimpleClockElement)
 ## Ideas
 I am not very imaginative. Sorry.
 
-* create an ```markup <include></include> ``` element that fetches remote content and renders it.
-* design a ```markup <chat></chat> ``` element that automatically connects to your WebSocket server
-* something with ```markup <user></user> ``` or ```markup <like-button></like-button> ``` 
+* create an ``` <include></include> ``` element that fetches remote content and renders it.
+* design a ``` <chat></chat> ``` element that automatically connects to your WebSocket server
+* something with ``` <user></user> ``` or ```markup <like-button></like-button> ``` 
 
 ## Bad ideas
 
