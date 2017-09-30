@@ -78,7 +78,7 @@ I am not very imaginative. Sorry.
 
 * create an ``` <include></include> ``` element that fetches remote content and renders it.
 * design a ``` <chat></chat> ``` element that automatically connects to your WebSocket server
-* something with ``` <user></user> ``` or ```markup <like-button></like-button> ``` 
+* something with ``` <user></user> ``` or ``` <like-button></like-button> ``` 
 
 ## Bad ideas
 
