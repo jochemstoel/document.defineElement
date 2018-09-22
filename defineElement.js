@@ -194,8 +194,8 @@
         hasProto = !!Object.__proto__,
         fixGetClass = false,
         DRECEV1 = '__dreCEv1',
-        customElements = window.customElements,
-        usableCustomElements = !/^force/.test(polyfill.type) && !!(customElements && customElements.define && customElements.get && customElements.whenDefined),
+        nativeElements = window.nativeElements,
+        usablenativeElements = !/^force/.test(polyfill.type) && !!(nativeElements && nativeElements.define && nativeElements.get && nativeElements.whenDefined),
         Dict = Object.create || Object,
         Map = window.Map || function Map() {
             var K = [],
@@ -694,7 +694,7 @@
     function CustomElementRegistry() {}
     CustomElementRegistry.prototype = {
         constructor: CustomElementRegistry,
-        define: usableCustomElements ? function(name, Class, options) {
+        define: usablenativeElements ? function(name, Class, options) {
             if (options) {
                 CERDefine(name, Class, options);
             } else {
@@ -704,14 +704,14 @@
                     create: [NAME]
                 };
                 nodeNames.set(Class, NAME);
-                customElements.define(name, Class);
+                nativeElements.define(name, Class);
             }
         } : CERDefine,
-        get: usableCustomElements ? function(name) {
-            return customElements.get(name) || get(name);
+        get: usablenativeElements ? function(name) {
+            return nativeElements.get(name) || get(name);
         } : get,
-        whenDefined: usableCustomElements ? function(name) {
-            return Promise.race([customElements.whenDefined(name), whenDefined(name)]);
+        whenDefined: usablenativeElements ? function(name) {
+            return Promise.race([nativeElements.whenDefined(name), whenDefined(name)]);
         } : whenDefined
     };
 
@@ -733,7 +733,7 @@
                     if (CProto[CREATED_CALLBACK])
                         CProto[CREATED_CALLBACK].call(this);
                     var info = constructors[nodeNames.get(Class)];
-                    if (!usableCustomElements || info.create.length > 1) {
+                    if (!usablenativeElements || info.create.length > 1) {
                         notifyAttributes(this);
                     }
                 }
@@ -800,8 +800,8 @@
     }
 
     function polyfillV1() {
-        if (customElements) delete window.customElements;
-        defineProperty(window, 'customElements', {
+        if (nativeElements) delete window.nativeElements;
+        defineProperty(window, 'nativeElements', {
             configurable: true,
             value: new CustomElementRegistry()
         });
@@ -813,13 +813,13 @@
                 patchClass = function(name) {
                     var Class = window[name];
                     if (Class) {
-                        window[name] = function CustomElementsV1(self) {
+                        window[name] = function nativeElementsV1(self) {
                             var info, isNative;
                             if (!self) self = this;
                             if (!self[DRECEV1]) {
                                 justCreated = true;
                                 info = constructors[nodeNames.get(self.constructor)];
-                                isNative = usableCustomElements && info.create.length === 1;
+                                isNative = usablenativeElements && info.create.length === 1;
                                 self = isNative ? Reflect.construct(Class, empty, info.constructor) : document.createElement.apply(document, info.create);
                                 self[DRECEV1] = true;
                                 justCreated = false;
@@ -847,17 +847,17 @@
             document[REGISTER_ELEMENT]('');
         }
     }
-    if (!customElements || /^force/.test(polyfill.type)) polyfillV1();
+    if (!nativeElements || /^force/.test(polyfill.type)) polyfillV1();
     else if (!polyfill.noBuiltIn) {
         try {
             (function(DRE, options, name) {
                 options[EXTENDS] = 'a';
                 DRE.prototype = create(HTMLAnchorElement.prototype);
                 DRE.prototype.constructor = DRE;
-                window.customElements.define(name, DRE, options);
+                window.nativeElements.define(name, DRE, options);
                 if (getAttribute.call(document.createElement('a', {
                         is: name
-                    }), 'is') !== name || (usableCustomElements && getAttribute.call(new DRE(), 'is') !== name)) {
+                    }), 'is') !== name || (usablenativeElements && getAttribute.call(new DRE(), 'is') !== name)) {
                     throw options;
                 }
             }(function DRE() {

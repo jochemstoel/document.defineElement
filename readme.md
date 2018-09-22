@@ -1,14 +1,48 @@
 ## What is this?
-The DOM's _document.registerElement_ requires you to include a hyphen in the node name to prevent conflict. I *refuse* to accept this rule and this is the result.
+The DOM's _document.registerElement_ and _customElements.define_ require you to include a hyphen in the node name to prevent conflict. I refused to accept this rule and this is the result. Think before using this.
 
 * document.defineElement is a polyfill for document.registerElement modified to allow elements without a hyphen (-) 
 * document.defineElement works even in browsers that do not implement document.registerElement.
 * document.defineElement is renamed to prevent conflict with document.registerElement.
-* document.defineElement lets you overwrite *all* existing DOM node behaviors. 
+* document.defineElement lets you overwrite native DOM node behaviors. 
 * document.defineElement can be used to create dynamic and interactive HTML node types.
+* document.defineElement is *deprecated in 2018* so you can use _nativeElements.define_ (also to prevent conflict)
+* nativeElements.define works just like customElements.define
+
+## Simple clock using nativeElements.define()
+The following custom &lt;clock&gt; element will show the current time and update it every second like a clock. In this example we are not using a hyphen in the node name. All we need to show a clock in our custom interface framework thing is put ``` <clock></clock> ``` somewhere.
+
+```js
+class HTMLSimpleClockElement extends HTMLSpanElement {
+	createdCallback() {
+   		var self = this
+        this.interval = setInterval(function() {
+        	self.innerText = new Date(new Date().getTime()).toLocaleTimeString()
+        }, this.getAttribute('refresh') || 1000)
+        console.log('created!')
+	}
+	connectedCallback() {
+		console.log('appended!')
+	}
+	constructor() {
+		console.log('construct!')
+		super()
+	}		    
+}
+//var Timer = document.defineElement('timer', HTMLSimpleClockElement)
+nativeElements.define('timer', HTMLSimpleClockElement)
+``` 
+
+```markup
+<body>
+    <!-- a clock refreshing every 500ms -->
+	<clock refresh="500"></clock>
+</body>
+``` 
 
 ## document.defineElement()
-Just like _document.registerElement_, your new class supports the following (optional) callbacks. This should be pretty straightforward.
+Just like _document.registerElement_, your new HTML element class supports the following (optional) callbacks. This should be pretty straightforward.
+This is how we did things with registerElement before it was deprecated.
 
 ```js 
 class HTMLSomeCustomElement extends HTMLElement {
@@ -33,12 +67,14 @@ class HTMLSomeCustomElement extends HTMLElement {
     }
 }
 
+document.registerElement('custom-element', HTMLSomeCustomElement)
 document.defineElement('custom-element', HTMLSomeCustomElement) 
 /* now every <custom-element></custom-element> will be an instanceof HTMLSomeCustomElement */
 ```
 
 ```js
-/* or you can do this too */
+/* or like this */
+var Custom = document.registerElement('custom-element', HTMLSomeCustomElement)
 var Custom = document.defineElement('custom-element', HTMLSomeCustomElement)
 document.body.appendChild(new Custom())
 ``` 
@@ -48,8 +84,8 @@ document.body.appendChild(new Custom())
 document.createElement('custom-element')
 ``` 
 
-## Simple clock, an actual example
-The following custom element will show the current time and update it every second like a clock. In this example we are not using a hyphen in the node name. All we need to show a clock in our custom interface framework thing is put ``` <clock></clock> ``` somewhere.
+## Simple clock using defineElement
+The following custom &lt;clock&gt; element will show the current time and update it every second like a clock. In this example we are not using a hyphen in the node name. All we need to show a clock in our custom interface framework thing is put ``` <clock></clock> ``` somewhere.
 
 ```js
 class HTMLSimpleClockElement extends HTMLSpanElement {
@@ -64,7 +100,7 @@ class HTMLSimpleClockElement extends HTMLSpanElement {
     
 }
 
-document.registerElement('clock', HTMLSimpleClockElement)
+document.defineElement('clock', HTMLSimpleClockElement)
 ``` 
 
 ```markup
